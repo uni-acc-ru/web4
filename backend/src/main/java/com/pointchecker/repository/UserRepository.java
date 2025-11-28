@@ -16,10 +16,6 @@ public class UserRepository {
     public UserRepository() {
     }
     
-    public EntityManager getEntityManager() {
-        return entityManager;
-    }
-    
     public User save(User user) {
         if (user.getId() == null) {
             entityManager.persist(user);

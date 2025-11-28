@@ -44,7 +44,6 @@ public class AuthService {
         String passwordHash = BCrypt.hashpw(request.getPassword(), BCrypt.gensalt());
         User user = new User(request.getUsername(), passwordHash);
         user = userRepository.save(user);
-        userRepository.getEntityManager().flush();
         
         String sessionToken = generateSessionToken(user.getId());
         
