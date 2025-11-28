@@ -1,0 +1,43 @@
+plugins {
+    id 'java'
+    id 'war'
+}
+
+group = 'com.pointchecker'
+version = '1.0.0'
+sourceCompatibility = '11'
+targetCompatibility = '11'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    providedCompile 'jakarta.platform:jakarta.jakartaee-api:10.0.0'
+    providedCompile 'jakarta.ws.rs:jakarta.ws.rs-api:3.1.0'
+    providedCompile 'jakarta.servlet:jakarta.servlet-api:6.0.0'
+    providedCompile 'jakarta.persistence:jakarta.persistence-api:3.1.0'
+    providedCompile 'jakarta.ejb:jakarta.ejb-api:4.0.1'
+    providedCompile 'jakarta.enterprise:jakarta.enterprise.cdi-api:4.0.1'
+    providedCompile 'jakarta.annotation:jakarta.annotation-api:2.1.1'
+
+    providedCompile 'org.postgresql:postgresql:42.6.0'
+
+    implementation 'org.mindrot:jbcrypt:0.4'
+
+    providedCompile 'com.fasterxml.jackson.core:jackson-databind:2.15.2'
+    providedCompile 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.15.2'
+    
+    testImplementation 'junit:junit:4.13.2'
+}
+
+war {
+    archiveFileName = 'pointchecker.war'
+}
+
+tasks.register('buildWar') {
+    dependsOn war
+    doLast {
+        println "WAR file created: ${war.archiveFile.get()}"
+    }
+}

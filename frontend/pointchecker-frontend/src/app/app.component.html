@@ -1,0 +1,184 @@
+<div class="container">
+  <!-- Header -->
+  <div class="header">
+    Стольная С.А. | Группа P3316 | Вариант 342324
+    <div *ngIf="isLoggedIn" class="user-info">
+      Пользователь: {{ currentUser?.username }}
+      <button pButton type="button" label="Выйти" (click)="logout()" class="p-button-sm p-button-danger" style="margin-left: 10px;"></button>
+    </div>
+  </div>
+
+  <!-- Auth Section -->
+  <div *ngIf="!isLoggedIn" class="auth-container">
+    <div class="auth-card">
+      <h2 class="auth-title">Добро пожаловать</h2>
+      <div class="auth-tabs">
+        <button 
+          class="auth-tab" 
+          [class.active]="showLoginForm"
+          (click)="showLoginForm = true; showRegisterForm = false; loginError = ''; registerError = ''">
+          Вход
+        </button>
+        <button 
+          class="auth-tab" 
+          [class.active]="showRegisterForm"
+          (click)="showRegisterForm = true; showLoginForm = false; loginError = ''; registerError = ''">
+          Регистрация
+        </button>
+      </div>
+
+      <!-- Login Form -->
+      <div *ngIf="showLoginForm" class="auth-form">
+        <div class="form-field">
+          <label for="loginUsername">Имя пользователя</label>
+          <input 
+            pInputText 
+            id="loginUsername" 
+            [(ngModel)]="loginUsername"
+            placeholder="Введите имя пользователя" />
+        </div>
+        <div class="form-field">
+          <label for="loginPassword">Пароль</label>
+          <input 
+            pInputText 
+            id="loginPassword" 
+            type="password" 
+            [(ngModel)]="loginPassword"
+            placeholder="Введите пароль" />
+        </div>
+        <div *ngIf="loginError" class="error-message">{{ loginError }}</div>
+        <button 
+          pButton 
+          type="button" 
+          label="Войти" 
+          (click)="login()" 
+          class="auth-button">
+        </button>
+      </div>
+
+      <!-- Register Form -->
+      <div *ngIf="showRegisterForm" class="auth-form">
+        <div class="form-field">
+          <label for="registerUsername">Имя пользователя</label>
+          <input 
+            pInputText 
+            id="registerUsername" 
+            [(ngModel)]="registerUsername"
+            placeholder="Придумайте имя пользователя" />
+        </div>
+        <div class="form-field">
+          <label for="registerPassword">Пароль</label>
+          <input 
+            pInputText 
+            id="registerPassword" 
+            type="password" 
+            [(ngModel)]="registerPassword"
+            placeholder="Придумайте пароль" />
+        </div>
+        <div *ngIf="registerError" class="error-message">{{ registerError }}</div>
+        <button 
+          pButton 
+          type="button" 
+          label="Зарегистрироваться" 
+          (click)="register()" 
+          class="auth-button">
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div *ngIf="isLoggedIn" class="main-content">
+    <!-- Form Section -->
+    <div class="form-section">
+      <h3>Ввод параметров</h3>
+      
+      <div class="form-group">
+        <label>X координата:</label>
+        <div style="margin-top: 10px;">
+          <p-selectButton [options]="xOptions" 
+                          [(ngModel)]="x"
+                          [multiple]="false">
+          </p-selectButton>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="y">Y координата (-5 до 3):</label>
+        <p-inputNumber 
+          id="y" 
+          [(ngModel)]="y" 
+          [min]="-5" 
+          [max]="3" 
+          [step]="0.1"
+          [minFractionDigits]="1"
+          [maxFractionDigits]="2"
+          placeholder="Введите Y">
+        </p-inputNumber>
+      </div>
+
+      <div class="form-group">
+        <label>Радиус R:</label>
+        <div style="margin-top: 10px;">
+          <p-selectButton [options]="rOptions" 
+                          [(ngModel)]="r"
+                          [multiple]="false"
+                          (ngModelChange)="redrawCanvas()">
+          </p-selectButton>
+        </div>
+      </div>
+
+      <button pButton type="button" label="Проверить точку" (click)="checkPoint()" 
+              [disabled]="x === null || y === null || r === null"
+              class="p-button-lg p-button-success" style="width: 100%; margin-top: 10px;"></button>
+    </div>
+
+    <!-- Graph Section -->
+    <div class="graph-section">
+      <h3>График</h3>
+      <canvas id="graph" width="400" height="400" (click)="onCanvasClick($event)"></canvas>
+      <p style="text-align: center; color: #8b4a6b; margin-top: 10px; font-size: 12px;">
+        Кликните на график, чтобы проверить точку
+      </p>
+    </div>
+  </div>
+
+  <!-- Results Section -->
+  <div *ngIf="isLoggedIn" class="results-section">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+      <h3>Результаты проверок</h3>
+      <button pButton type="button" label="Очистить все" (click)="clearPoints()" 
+              class="p-button-sm p-button-danger" [disabled]="points.length === 0"></button>
+    </div>
+
+    <p-table [value]="points" [scrollable]="true" scrollHeight="300px" styleClass="results-table">
+      <ng-template pTemplate="header">
+        <tr>
+          <th>X</th>
+          <th>Y</th>
+          <th>R</th>
+          <th>Результат</th>
+          <th>Время выполнения</th>
+          <th>Время проверки</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-point>
+        <tr>
+          <td>{{ point.x }}</td>
+          <td>{{ point.y }}</td>
+          <td>{{ point.r }}</td>
+          <td [class]="point.hit ? 'hit' : 'miss'">
+            {{ point.hit ? 'Попадание' : 'Промах' }}
+          </td>
+          <td>{{ point.executionTime }} мс</td>
+          <td>{{ point.timestamp }}</td>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="6" style="text-align: center;">Нет данных</td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+</div>

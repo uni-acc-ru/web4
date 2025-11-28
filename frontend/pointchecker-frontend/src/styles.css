@@ -1,0 +1,387 @@
+/* You can add global styles to this file, and also import other style files */
+
+body {
+    background: linear-gradient(135deg, #fff5f7 0%, #ffe8f0 100%);
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    min-height: 100vh;
+}
+
+.header {
+    font-family: 'Segoe UI', sans-serif;
+    font-size: 18px;
+    color: #8b4a6b;
+    text-align: center;
+    margin-bottom: 30px;
+    padding: 20px;
+    background: linear-gradient(135deg, #ffd4e5 0%, #ffb3d9 100%);
+    border-radius: 15px;
+    position: relative;
+    border: none;
+    box-shadow: 0 4px 15px rgba(255, 179, 217, 0.3);
+    font-weight: 500;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    min-height: 100vh;
+}
+
+.main-content {
+    display: flex;
+    gap: 30px;
+    margin-bottom: 30px;
+}
+
+.form-section {
+    flex: 1;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 25px;
+    border-radius: 20px;
+    border: 2px solid #ffc4dd;
+    box-shadow: 0 8px 25px rgba(255, 179, 217, 0.25);
+}
+
+.graph-section {
+    flex: 1;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 25px;
+    border-radius: 20px;
+    border: 2px solid #ffc4dd;
+    box-shadow: 0 8px 25px rgba(255, 179, 217, 0.25);
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #d1477a;
+    font-size: 14px;
+}
+
+.x-link {
+    display: inline-block;
+    padding: 10px 16px;
+    background: linear-gradient(135deg, #ffe8f0 0%, #ffd4e5 100%);
+    color: #8b4a6b;
+    text-decoration: none;
+    border: 2px solid #ffb3d9;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    margin: 4px;
+}
+
+.x-link:hover {
+    background: linear-gradient(135deg, #ffb3d9 0%, #ff8dc7 100%);
+    color: white;
+    border-color: #ff8dc7;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 141, 199, 0.4);
+}
+
+.x-link.active {
+    background: linear-gradient(135deg, #ff8dc7 0%, #ff6bb5 100%);
+    color: white;
+    border-color: #ff6bb5;
+    box-shadow: 0 4px 12px rgba(255, 107, 181, 0.4);
+}
+
+#graph {
+    border: 2px solid #ffc4dd;
+    background: linear-gradient(135deg, #ffffff, #fff5f7);
+    display: block;
+    margin: 0 auto;
+    border-radius: 15px;
+    cursor: crosshair;
+    box-shadow: 0 4px 15px rgba(255, 179, 217, 0.2);
+}
+
+.results-section {
+    background: rgba(255, 255, 255, 0.9);
+    padding: 25px;
+    border-radius: 20px;
+    border: 2px solid #ffc4dd;
+    box-shadow: 0 8px 25px rgba(255, 179, 217, 0.25);
+}
+
+.results-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+}
+
+.results-table th,
+.results-table td {
+    border: 1px solid #ffc4dd;
+    padding: 12px;
+    text-align: center;
+}
+
+.results-table th {
+    background: linear-gradient(135deg, #ffd4e5 0%, #ffb3d9 100%);
+    font-weight: 600;
+    color: #8b4a6b;
+    font-size: 14px;
+}
+
+.results-table tbody tr:nth-child(even) {
+    background-color: #fff5f7;
+}
+
+.results-table tbody tr:nth-child(odd) {
+    background-color: #ffffff;
+}
+
+.results-table tbody tr:hover {
+    background-color: #ffe8f0;
+    transition: background-color 0.2s ease;
+}
+
+.hit {
+    color: #27ae60;
+    font-weight: bold;
+}
+
+.miss {
+    color: #e74c3c;
+    font-weight: bold;
+}
+
+h3 {
+    color: #d1477a;
+    margin-top: 0;
+    font-weight: 600;
+    font-size: 20px;
+}
+
+h4 {
+    color: #d1477a;
+    font-weight: 600;
+}
+
+.user-info {
+    text-align: right;
+    color: #8b4a6b;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+/* Auth Styles */
+.auth-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 500px;
+    padding: 40px 0;
+}
+
+.auth-card {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 25px;
+    padding: 40px;
+    width: 100%;
+    max-width: 450px;
+    box-shadow: 0 10px 40px rgba(255, 107, 181, 0.3);
+    border: 2px solid #ffc4dd;
+}
+
+.auth-title {
+    text-align: center;
+    color: #d1477a;
+    font-size: 28px;
+    font-weight: 600;
+    margin: 0 0 30px 0;
+}
+
+.auth-tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 30px;
+}
+
+.auth-tab {
+    flex: 1;
+    padding: 12px 24px;
+    background: linear-gradient(135deg, #ffe8f0 0%, #ffd4e5 100%);
+    border: 2px solid #ffb3d9;
+    border-radius: 12px;
+    color: #8b4a6b;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.auth-tab:hover {
+    background: linear-gradient(135deg, #ffd4e5 0%, #ffb3d9 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 179, 217, 0.4);
+}
+
+.auth-tab.active {
+    background: linear-gradient(135deg, #ff8dc7 0%, #ff6bb5 100%);
+    border-color: #ff6bb5;
+    color: white;
+    box-shadow: 0 4px 12px rgba(255, 107, 181, 0.4);
+}
+
+.auth-form {
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.form-field {
+    margin-bottom: 20px;
+}
+
+.form-field label {
+    display: block;
+    margin-bottom: 8px;
+    color: #d1477a;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.form-field input {
+    width: 100%;
+    padding: 12px 16px;
+    border: 2px solid #ffc4dd;
+    border-radius: 12px;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    background: #fff5f7;
+}
+
+.form-field input:focus {
+    outline: none;
+    border-color: #ff8dc7;
+    background: white;
+    box-shadow: 0 0 0 3px rgba(255, 141, 199, 0.1);
+}
+
+.form-field input::placeholder {
+    color: #d1b3c4;
+}
+
+.auth-button {
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(135deg, #ff8dc7 0%, #ff6bb5 100%) !important;
+    border: none !important;
+    border-radius: 12px !important;
+    color: white !important;
+    font-size: 16px !important;
+    font-weight: 600 !important;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 10px;
+}
+
+.auth-button:hover {
+    background: linear-gradient(135deg, #ff6bb5 0%, #ff4da3 100%) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 107, 181, 0.4) !important;
+}
+
+.auth-button:active {
+    transform: translateY(0);
+}
+
+.error-message {
+    color: #e74c3c;
+    font-size: 13px;
+    margin-top: -10px;
+    margin-bottom: 10px;
+    font-weight: 500;
+    animation: fadeIn 0.3s ease;
+}
+
+/* PrimeNG Overrides for Pink Theme */
+.p-button {
+    background: linear-gradient(135deg, #ff8dc7 0%, #ff6bb5 100%) !important;
+    border: none !important;
+    border-radius: 10px !important;
+    font-weight: 600 !important;
+}
+
+.p-button:hover {
+    background: linear-gradient(135deg, #ff6bb5 0%, #ff4da3 100%) !important;
+    box-shadow: 0 4px 12px rgba(255, 107, 181, 0.4) !important;
+}
+
+.p-button-danger {
+    background: linear-gradient(135deg, #ff6bb5 0%, #ff4da3 100%) !important;
+}
+
+.p-selectbutton .p-button {
+    background: linear-gradient(135deg, #ffe8f0 0%, #ffd4e5 100%) !important;
+    border: 2px solid #ffb3d9 !important;
+    color: #8b4a6b !important;
+}
+
+.p-selectbutton .p-button:hover {
+    background: linear-gradient(135deg, #ffd4e5 0%, #ffb3d9 100%) !important;
+}
+
+.p-selectbutton .p-button.p-highlight {
+    background: linear-gradient(135deg, #ff8dc7 0%, #ff6bb5 100%) !important;
+    border-color: #ff6bb5 !important;
+    color: white !important;
+}
+
+.p-inputnumber-input,
+.p-inputtext {
+    border: 2px solid #ffc4dd !important;
+    border-radius: 10px !important;
+    background: #fff5f7 !important;
+}
+
+.p-inputnumber-input:focus,
+.p-inputtext:focus {
+    border-color: #ff8dc7 !important;
+    box-shadow: 0 0 0 3px rgba(255, 141, 199, 0.1) !important;
+    background: white !important;
+}
+
+.p-toast .p-toast-message {
+    border-radius: 12px !important;
+    border-left: 4px solid #ff8dc7 !important;
+}
+
+.p-toast .p-toast-message-success {
+    background: linear-gradient(135deg, #fff5f7 0%, #ffe8f0 100%) !important;
+    border-left-color: #ff6bb5 !important;
+    color: #8b4a6b !important;
+}
+
+.p-toast .p-toast-message-info {
+    background: linear-gradient(135deg, #fff5f7 0%, #ffe8f0 100%) !important;
+    border-left-color: #ffc4dd !important;
+    color: #8b4a6b !important;
+}
+
+.p-toast .p-toast-message-error {
+    background: linear-gradient(135deg, #fff5f7 0%, #ffe8f0 100%) !important;
+    border-left-color: #d1477a !important;
+    color: #8b4a6b !important;
+}
