@@ -205,21 +205,21 @@ export class AppComponent implements OnInit {
       return;
     }
     
-    if (this.y < -5 || this.y > 3) {
-      return;
-    }
-    
     if (this.r < 1 || this.r > 5) {
       return;
     }
     
+    this.sendPointRequest(this.x, this.y, this.r);
+  }
+  
+  private sendPointRequest(x: number, y: number, r: number) {
     const token = localStorage.getItem('token');
     const options = token ? { headers: { Authorization: `Bearer ${token}` } } : {};
     
     this.http.post<Point>(`${environment.apiUrl}/points`, {
-      x: this.x,
-      y: this.y,
-      r: this.r
+      x: x,
+      y: y,
+      r: r
     }, options).subscribe({
       next: (point) => {
         this.points.unshift(point);
@@ -432,10 +432,12 @@ export class AppComponent implements OnInit {
     const rawX = (clickX - centerX) / scale;
     const rawY = (centerY - clickY) / scale;
     
-    // Оставляем точное значение X и Y с двумя знаками после запятой
-    this.x = Number(rawX.toFixed(2));
-    this.y = Number(rawY.toFixed(2));
+    const x = Number(rawX.toFixed(2));
+    const y = Number(rawY.toFixed(2));
     
-    this.checkPoint();
+    this.x = x;
+    this.y = y;
+    
+    this.sendPointRequest(x, y, this.r);
   }
 }
