@@ -12,7 +12,7 @@ import java.util.Date;
 @Stateless
 public class JwtService {
     
-    private static final String JWT_SECRET = "your-super-secret-jwt-key-that-must-be-at-least-256-bits-long-for-hs256";
+    private static final String JWT_SECRET = "secretsecretsecretsecretsecret256bitskey";
     private static final long JWT_EXPIRATION_MS = 24 * 60 * 60 * 1000;
     
     public JwtService() {
