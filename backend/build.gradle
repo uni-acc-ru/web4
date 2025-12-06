@@ -24,6 +24,9 @@ dependencies {
     providedCompile 'org.postgresql:postgresql:42.6.0'
 
     implementation 'org.mindrot:jbcrypt:0.4'
+    implementation 'io.jsonwebtoken:jjwt-api:0.12.3'
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.3'
+    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.3'
 
     providedCompile 'com.fasterxml.jackson.core:jackson-databind:2.15.2'
     providedCompile 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.15.2'
