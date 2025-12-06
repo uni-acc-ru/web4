@@ -21,6 +21,17 @@ body {
     border: none;
     box-shadow: 0 4px 15px rgba(255, 179, 217, 0.3);
     font-weight: 500;
+    overflow: visible;
+}
+
+.header-pikmi {
+    position: absolute;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-40%);
+    height: 140px;
+    width: auto;
+    z-index: 10;
 }
 
 .container {
