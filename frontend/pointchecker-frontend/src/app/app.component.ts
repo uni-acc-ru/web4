@@ -1,21 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { MessageService } from 'primeng/api';
-import { environment } from '../environments/environment';
-
-interface Point {
-  id?: number;
-  x: number;
-  y: number;
-  r: number;
-  hit: boolean;
-  executionTime?: number;
-  timestamp?: string;
-}
-
-interface User {
-  username: string;
-}
+import { Point } from './models/point.model';
+import { User } from './models/user.model';
+import { AuthService } from './services/auth.service';
+import { PointService } from './services/point.service';
 
 @Component({
   selector: 'app-root',
@@ -25,12 +13,10 @@ interface User {
 export class AppComponent implements OnInit {
   title = 'Point Checker';
   
-  // Form values
   x: number | null = null;
   y: number | null = null;
   r: number | null = 3;
   
-  // X values for buttons
   xValues = [-3, -2, -1, 0, 1, 2, 3, 4, 5];
   xOptions = [
     {label: '-3', value: -3},
@@ -44,7 +30,6 @@ export class AppComponent implements OnInit {
     {label: '5', value: 5}
   ];
   
-  // R values for buttons
   rValues = [1, 2, 3, 4, 5];
   rOptions = [
     {label: '1', value: 1},
@@ -54,14 +39,11 @@ export class AppComponent implements OnInit {
     {label: '5', value: 5}
   ];
   
-  // Results
   points: Point[] = [];
   
-  // User
   currentUser: User | null = null;
   isLoggedIn = false;
   
-  // Auth forms
   showLoginForm = false;
   showRegisterForm = false;
   loginUsername = '';
@@ -71,36 +53,36 @@ export class AppComponent implements OnInit {
   loginError = '';
   registerError = '';
   
-  // Success animation
   showSuccessAnimation = false;
   randomImage: string = '';
   
   constructor(
-    private http: HttpClient,
+    private authService: AuthService,
+    private pointService: PointService,
     private messageService: MessageService
   ) {}
   
   ngOnInit() {
-    this.checkAuth();
-    this.loadPoints();
-    // Задержка для инициализации canvas после рендеринга DOM
+    this.isLoggedIn = this.authService.isLoggedIn();
+    this.currentUser = this.authService.getCurrentUser();
+    
+    this.authService.currentUser$.subscribe(user => {
+      this.currentUser = user;
+      this.isLoggedIn = !!user;
+    });
+    
+    if (this.isLoggedIn) {
+      this.loadPoints();
+    }
+    
     setTimeout(() => {
       this.redrawCanvas();
     }, 100);
   }
   
-  checkAuth() {
-    const token = localStorage.getItem('token');
-    if (token) {
-      this.isLoggedIn = true;
-      this.currentUser = { username: localStorage.getItem('username') || 'User' };
-    }
-  }
-  
   login() {
     this.loginError = '';
     
-    // Валидация
     if (!this.loginUsername || !this.loginPassword) {
       this.loginError = 'Заполните все поля';
       return;
@@ -116,15 +98,11 @@ export class AppComponent implements OnInit {
       return;
     }
     
-    this.http.post<any>(`${environment.apiUrl}/auth/login`, {
+    this.authService.login({
       username: this.loginUsername,
       password: this.loginPassword
     }).subscribe({
-      next: (response) => {
-        localStorage.setItem('token', response.sessionToken);
-        localStorage.setItem('username', this.loginUsername);
-        this.isLoggedIn = true;
-        this.currentUser = { username: this.loginUsername };
+      next: () => {
         this.showLoginForm = false;
         this.loginError = '';
         this.loginUsername = '';
@@ -132,7 +110,7 @@ export class AppComponent implements OnInit {
         this.loadPoints();
         setTimeout(() => this.redrawCanvas(), 200);
       },
-      error: (error) => {
+      error: () => {
         this.loginError = 'Неверное имя пользователя или пароль';
       }
     });
@@ -141,7 +119,6 @@ export class AppComponent implements OnInit {
   register() {
     this.registerError = '';
     
-    // Валидация
     if (!this.registerUsername || !this.registerPassword) {
       this.registerError = 'Заполните все поля';
       return;
@@ -157,15 +134,11 @@ export class AppComponent implements OnInit {
       return;
     }
     
-    this.http.post<any>(`${environment.apiUrl}/auth/register`, {
+    this.authService.register({
       username: this.registerUsername,
       password: this.registerPassword
     }).subscribe({
-      next: (response) => {
-        localStorage.setItem('token', response.sessionToken);
-        localStorage.setItem('username', this.registerUsername);
-        this.isLoggedIn = true;
-        this.currentUser = { username: this.registerUsername };
+      next: () => {
         this.showRegisterForm = false;
         this.registerError = '';
         this.registerUsername = '';
@@ -173,8 +146,6 @@ export class AppComponent implements OnInit {
         setTimeout(() => this.redrawCanvas(), 200);
       },
       error: (error) => {
-        console.error('Registration error:', error);
-        // Проверяем сообщение об ошибке от сервера
         if (error.error?.message) {
           this.registerError = error.error.message;
         } else if (error.error?.error) {
@@ -188,24 +159,18 @@ export class AppComponent implements OnInit {
     });
   }
   
-  logout() {
-    localStorage.removeItem('token');
-    localStorage.removeItem('username');
-    this.isLoggedIn = false;
-    this.currentUser = null;
-    this.points = [];
-  }
-  
   selectX(value: number) {
     this.x = value;
   }
   
+  logout() {
+    this.authService.logout();
+    this.points = [];
+  }
+  
   checkPoint() {
     if (this.x === null || this.y === null || this.r === null) {
-      return;
-    }
-    
-    if (this.r < 1 || this.r > 5) {
+      this.messageService.add({severity: 'warn', summary: 'Предупреждение', detail: 'Заполните все поля'});
       return;
     }
     
@@ -213,21 +178,12 @@ export class AppComponent implements OnInit {
   }
   
   private sendPointRequest(x: number, y: number, r: number) {
-    const token = localStorage.getItem('token');
-    const options = token ? { headers: { Authorization: `Bearer ${token}` } } : {};
-    
-    this.http.post<Point>(`${environment.apiUrl}/points`, {
-      x: x,
-      y: y,
-      r: r
-    }, options).subscribe({
+    this.pointService.checkPoint({ x, y, r }).subscribe({
       next: (point) => {
         this.points.unshift(point);
         this.drawPoint(point);
         
-        // Show success animation if hit
         if (point.hit) {
-          // Select random image
           const images = ['2.png', '3.png', '4.png', '5.png'];
           const randomIndex = Math.floor(Math.random() * images.length);
           this.randomImage = `assets/images/${images[randomIndex]}`;
@@ -238,42 +194,32 @@ export class AppComponent implements OnInit {
           }, 2000);
         }
       },
-      error: (error) => {
-        // Silent error
+      error: () => {
       }
     });
   }
   
   loadPoints() {
-    const token = localStorage.getItem('token');
-    if (!token) return;
+    if (!this.authService.isLoggedIn()) return;
     
-    const options = { headers: { Authorization: `Bearer ${token}` } };
-    
-    this.http.get<Point[]>(`${environment.apiUrl}/points`, options).subscribe({
+    this.pointService.getPoints().subscribe({
       next: (points) => {
         this.points = points;
         this.redrawCanvas();
       },
-      error: (error) => {
-        // Silent error handling
+      error: () => {
       }
     });
   }
   
   clearPoints() {
-    const token = localStorage.getItem('token');
-    if (!token) return;
-    
-    const options = { headers: { Authorization: `Bearer ${token}` } };
-    
-    this.http.delete(`${environment.apiUrl}/points`, options).subscribe({
+    this.pointService.clearPoints().subscribe({
       next: () => {
         this.points = [];
         this.redrawCanvas();
         this.messageService.add({severity: 'success', summary: 'Успешно', detail: 'Все точки удалены'});
       },
-      error: (error) => {
+      error: () => {
         this.messageService.add({severity: 'error', summary: 'Ошибка', detail: 'Ошибка удаления точек'});
       }
     });
@@ -281,11 +227,7 @@ export class AppComponent implements OnInit {
   
   redrawCanvas() {
     const canvas = document.getElementById('graph') as HTMLCanvasElement;
-    if (!canvas) {
-      // Canvas еще не загрузился, попробуем позже
-      setTimeout(() => this.redrawCanvas(), 100);
-      return;
-    }
+    if (!canvas) return;
     
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
@@ -295,32 +237,23 @@ export class AppComponent implements OnInit {
     const centerX = width / 2;
     const centerY = height / 2;
     const r = this.r || 3;
-    // Масштаб: максимальный R (5) соответствует 150 пикселям
-    // При R=1: scale = 30, размер фигуры = 30 * 1 = 30px (было 20px)
-    // При R=2: scale = 30, размер фигуры = 30 * 2 = 60px (было 40px)
-    // При R=5: scale = 30, размер фигуры = 30 * 5 = 150px (было 100px)
     const maxR = 5;
-    const maxSize = 150; // максимальный размер в пикселях
+    const maxSize = 150;
     const scale = maxSize / maxR;
     
-    // Clear canvas
     ctx.fillStyle = 'white';
     ctx.fillRect(0, 0, width, height);
     
-    // Draw shapes - заливка пыльно-розовых областей
     ctx.fillStyle = '#e6b8d4';
     
-    // Четверть круга слева-сверху (вторая четверть графика)
     ctx.beginPath();
     ctx.arc(centerX, centerY, scale * r, Math.PI, Math.PI * 1.5);
     ctx.lineTo(centerX, centerY);
     ctx.closePath();
     ctx.fill();
     
-    // Квадрат слева-снизу со стороной R
     ctx.fillRect(centerX - scale * r, centerY, scale * r, scale * r);
     
-    // Треугольник справа-снизу со стороной R
     ctx.beginPath();
     ctx.moveTo(centerX, centerY);
     ctx.lineTo(centerX + scale * r, centerY);
@@ -328,7 +261,6 @@ export class AppComponent implements OnInit {
     ctx.closePath();
     ctx.fill();
     
-    // Оси координат
     ctx.strokeStyle = '#000';
     ctx.lineWidth = 2;
     ctx.beginPath();
@@ -338,7 +270,6 @@ export class AppComponent implements OnInit {
     ctx.lineTo(centerX, height);
     ctx.stroke();
     
-    // Стрелки
     ctx.beginPath();
     ctx.moveTo(width - 10, centerY - 5);
     ctx.lineTo(width, centerY);
@@ -348,7 +279,6 @@ export class AppComponent implements OnInit {
     ctx.lineTo(centerX + 5, 10);
     ctx.stroke();
     
-    // Подписи
     ctx.fillStyle = '#000';
     ctx.font = '14px Arial';
     ctx.fillText('x', width - 15, centerY - 10);
@@ -362,7 +292,6 @@ export class AppComponent implements OnInit {
     ctx.fillText('-R', centerX + 10, centerY + scale * r);
     ctx.fillText('-R/2', centerX + 10, centerY + scale * r / 2);
     
-    // Метки на осях
     ctx.lineWidth = 1;
     ctx.beginPath();
     ctx.moveTo(centerX + scale * r, centerY - 5);
@@ -383,7 +312,6 @@ export class AppComponent implements OnInit {
     ctx.lineTo(centerX + 5, centerY + scale * r / 2);
     ctx.stroke();
     
-    // Draw points
     this.points.forEach(point => {
       this.drawPoint(point);
     });
@@ -398,7 +326,6 @@ export class AppComponent implements OnInit {
     
     const centerX = canvas.width / 2;
     const centerY = canvas.height / 2;
-    // Синхронизировано с redrawCanvas
     const maxR = 5;
     const maxSize = 150;
     const scale = maxSize / maxR;
@@ -424,7 +351,6 @@ export class AppComponent implements OnInit {
     
     const centerX = canvas.width / 2;
     const centerY = canvas.height / 2;
-    // Синхронизировано с redrawCanvas
     const maxR = 5;
     const maxSize = 150;
     const scale = maxSize / maxR;
