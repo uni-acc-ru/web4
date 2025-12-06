@@ -1,4 +1,13 @@
 <div class="container">
+  <!-- Success Animation Overlay -->
+  <div class="success-overlay" *ngIf="showSuccessAnimation">
+    <div class="sunburst-container">
+      <div class="sunburst"></div>
+      <img [src]="randomImage" class="success-image" alt="Success">
+      <div class="success-text">ПОПАДАНИЕ!</div>
+    </div>
+  </div>
+
   <!-- Header -->
   <div class="header">
     Стольная С.А. | Группа P3316 | Вариант 342324

@@ -71,6 +71,10 @@ export class AppComponent implements OnInit {
   loginError = '';
   registerError = '';
   
+  // Success animation
+  showSuccessAnimation = false;
+  randomImage: string = '';
+  
   constructor(
     private http: HttpClient,
     private messageService: MessageService
@@ -220,6 +224,19 @@ export class AppComponent implements OnInit {
       next: (point) => {
         this.points.unshift(point);
         this.drawPoint(point);
+        
+        // Show success animation if hit
+        if (point.hit) {
+          // Select random image
+          const images = ['2.png', '3.png', '4.png', '5.png'];
+          const randomIndex = Math.floor(Math.random() * images.length);
+          this.randomImage = `assets/images/${images[randomIndex]}`;
+          
+          this.showSuccessAnimation = true;
+          setTimeout(() => {
+            this.showSuccessAnimation = false;
+          }, 2000);
+        }
       },
       error: (error) => {
         // Silent error

@@ -385,3 +385,136 @@ h4 {
     border-left-color: #d1477a !important;
     color: #8b4a6b !important;
 }
+
+/* Success Animation Overlay */
+.success-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.3);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+    animation: fadeInOverlay 0.3s ease;
+}
+
+@keyframes fadeInOverlay {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.sunburst-container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 400px;
+    height: 400px;
+}
+
+.sunburst {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 50px;
+    height: 50px;
+    background: 
+        repeating-conic-gradient(
+            from 0deg,
+            rgba(255, 215, 0, 0) 0deg,
+            rgba(255, 215, 0, 0.2) 3deg,
+            rgba(255, 215, 0, 0.6) 6deg,
+            rgba(255, 215, 0, 0.9) 9deg,
+            rgba(255, 215, 0, 0.6) 12deg,
+            rgba(255, 215, 0, 0.2) 15deg,
+            rgba(255, 215, 0, 0) 18deg
+        );
+    border-radius: 50%;
+    animation: growAndSpin 2s ease-out forwards;
+    mask-image: radial-gradient(circle, black 0%, black 70%, transparent 100%);
+    -webkit-mask-image: radial-gradient(circle, black 0%, black 70%, transparent 100%);
+}
+
+.success-image {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 50px;
+    height: 50px;
+    object-fit: contain;
+    animation: growImage 2s ease-out forwards;
+    z-index: 5;
+}
+
+@keyframes growImage {
+    0% {
+        width: 50px;
+        height: 50px;
+        opacity: 0;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        width: 250px;
+        height: 250px;
+        opacity: 1;
+    }
+}
+
+@keyframes growAndSpin {
+    0% {
+        width: 50px;
+        height: 50px;
+        opacity: 0.5;
+        transform: translate(-50%, -50%) rotate(0deg);
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        width: 400px;
+        height: 400px;
+        opacity: 0.9;
+        transform: translate(-50%, -50%) rotate(720deg);
+    }
+}
+
+.success-text {
+    position: relative;
+    margin-top: 140px;
+    font-size: 24px;
+    font-weight: 900;
+    color: #ff6bb5;
+    text-shadow: 
+        0 0 10px rgba(255, 215, 0, 0.8),
+        0 0 20px rgba(255, 215, 0, 0.6),
+        2px 2px 4px rgba(0, 0, 0, 0.3);
+    z-index: 10;
+    animation: growText 2s ease-out forwards;
+    letter-spacing: 3px;
+}
+
+@keyframes growText {
+    0% {
+        font-size: 12px;
+        opacity: 0;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        font-size: 48px;
+        opacity: 1;
+    }
+}
